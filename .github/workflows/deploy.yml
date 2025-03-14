@@ -1,0 +1,40 @@
+ 
+name: Deploy Azure Function App (Node.js)
+
+on:
+  push:
+    branches:
+      - master  # Change to your branch if needed
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests (Optional)
+        run: npm test
+
+      - name: Build Project
+        run: npm run build # If using TypeScript or Webpack
+
+      - name: 'Login to Azure'
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 'Deploy to Azure Functions'
+        uses: Azure/functions-action@v1
+        with:
+          app-name: 'landalert-weelky-report'  # Replace with your Azure Function App name
+          package: '.'
