@@ -19,3 +19,16 @@ steps:
     npm install
     npm run build
   displayName: 'npm install and build'
+
+
+- script: |
+    zip -r functionapp.zip . -x "*.git*" "node_modules/*"
+  displayName: 'Package Function App'
+
+
+- task: AzureFunctionApp@1
+  inputs:
+    azureSubscription: 'c4327713-48f7-4d79-9e61-f66cc33c3525'  # Service Connection in Azure DevOps
+    appName: 'landalert-weelky-report'  # Azure Function App Name
+    package: '$(System.DefaultWorkingDirectory)/functionapp.zip'
+  displayName: 'Deploy to Azure Function App'
